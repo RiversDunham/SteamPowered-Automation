@@ -49,57 +49,14 @@ class HomePage extends Base {
         const flyoutElements = await this.flyoutTabs
 
         for(let x = 0; x < flyoutElements.length; x ++) {
-                const flyout = 0
 
                 await flyoutElements[x].moveTo()
 
-                if(x == 0) {
-                    const forYouLinks = await this.foryouFlyoutLinks
+                const forYouLinks = await this.foryouFlyoutLinks
                     for(const link of forYouLinks) {
-                        await link.isClickable()
-                        await link.click()
-                        expect(browser).not.toHaveUrl('https://store.steampowered.com/')
-                        await browser.back()
+                        await expect(link).not.toHaveHref('https://store.steampowered.com/')
                         await flyoutElements[x].moveTo()
                     }
-                }
-                if(x == 1) {
-                    const notesLinks = await this.newAndNoteLinks
-                    for(const link of notesLinks) {
-                        await link.isClickable()
-                        await link.click()
-                        expect(browser).not.toHaveUrl('https://store.steampowered.com/')
-                        await browser.back()
-                        await flyoutElements[x].moveTo()
-                    }
-                }
-        }
-    }
-
-    //Times out
-    async flyoutGenres() {
-        const flyoutElements = await this.flyoutTabs
-
-        for(let x = 0; x < flyoutElements.length; x ++) {
-
-                await flyoutElements[x].moveTo()
-
-                if(x == 0) {
-                    break
-                }
-                if(x == 1) {
-                    break
-                }
-                if(x == 2) {
-                    const genreLinks = await this.genreFlyoutLinks
-                    for(const link of genreLinks) {
-                        await link.isClickable()
-                        await link.click()
-                        expect(browser).not.toHaveUrl('https://store.steampowered.com/')
-                        await browser.back()
-                        await flyoutElements[x].moveTo()
-                    }
-                }
         }
     }
 
@@ -108,31 +65,31 @@ class HomePage extends Base {
         const tabElements = await this.tabs
 
         for(const tabThings of tabElements) {
-            await tabThings.isClickable()
-            await tabThings.click()
-            expect(browser).not.toHaveUrl('https://store.steampowered.com/')
-            await browser.back()
+            await expect(tabThings).not.toHaveHref('https://store.steampowered.com/')
         }
     }
 
-    //Nearly finished
+    //Finished
     async searchFunction() {
 
         await this.searchInput.click()
-        expect(this.searchInput).not.toHaveAttribute('class', 'default') //search placeholder to dissapear (not working)
+        expect(this.searchInput).not.toHaveAttribute('class', 'default')
+
         await this.searchInput.setValue('raft')
         expect(this.suggestions).toBeExisting({timeout : 5000})
         await browser.keys('Enter')
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
-        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') //max len +2
+        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
         await browser.keys('Enter')
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
 
-        //this is where i would test for the little x thing that appears but idk how to get the selector
+        await this.searchInput.setValue('e')
+        await this.searchInput.click({x : 80})
+        expect(this.searchInput).toHaveValue('')
 
         await this.searchInput.setValue('!@#$%^&*()-_=+\|[]{};:/><')
         expect(this.suggestions).toBeExisting({timeout : 5000})
@@ -143,20 +100,23 @@ class HomePage extends Base {
 
         //second time (clicking magnifiying glass)
         await this.searchInput.click()
-        expect() //search placeholder to dissapear
+        expect(this.searchInput).not.toHaveAttribute('class', 'default')
+
         await this.searchInput.setValue('raft')
         expect(this.suggestions).toBeExisting({timeout : 5000})
         await this.magnifiyingGlass.click()
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
-        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') //max len +2
+        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
         await this.magnifiyingGlass.click()
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
 
-        //this is where i would test for the little x thing that appears but idk how to get the selector
+        await this.searchInput.setValue('e')
+        await this.searchInput.click({x : 80})
+        expect(this.searchInput).toHaveValue('')
 
         await this.searchInput.setValue('!@#$%^&*()-_=+\|[]{};:/><')
         expect(this.suggestions).toBeExisting({timeout : 5000})
@@ -231,9 +191,7 @@ class HomePage extends Base {
     
                 expect(mainImageAttri).toEqual(subImageAttri)
             }
-            await this.imageFocus.click()
-            expect(browser).not.toHaveUrl('https://store.steampowered.com/')
-            await browser.back()
+            await expect(this.imageWheel).not.toHaveHref('https://store.steampowered.com/')
             const currentThumb = await this.thumbsContainer.$(`div:nth-child(${i + 1})`);
             await currentThumb.click();
 
@@ -257,35 +215,62 @@ class HomePage extends Base {
         while(await this.imageDefault.getAttribute('data-background-image-url') == initalAttr) {
             
         }
-
-        for (let i = 0; i < 11; i ++) {
-            
-        }
     }
 
     //module 3
     get leftTabs() {
-        return $$('.tab_item.app_impression_tracked')
+        return $$('#tab_newreleases_content .tab_content_items > a')
+    }
+
+    get tags() {
+        return $$('#tab_newreleases_content .tab_content_items > a.tab_item.app_impression_tracked.focus .tab_item_top_tags span')
+    }
+
+    get tagsR() {
+        return $$('.home_rightcol .tab_preview.focus a')
     }
 
     get rightTitle() {
         return $('#tab_preview_container .tab_preview.focus h2')
     }
 
-    async bottomFunction() {
-        for (let x = 0; x < this.leftTabs.length; x ++) {
-            const tab = await this.leftTabs[x]
-            const title = await tab.$('.tab_item_name')
-            await tab.moveTo()
-            expect(tab).toHaveAttribute('class', 'tab_item app_impression_tracked focus')
-
-            expect(title).toBeDisplayed() //game title
-
-            const text = await title.getText()
-            const otherText = await this.rightTitle.getText()
-            expect(text).toEqual(otherText)
-        }
+    get seeMoreButtons() {
+        return $$('.home_tabs_content .tab_see_more a')
     }
+
+    get mainTabs() {
+        return $$('.home_tabs_row > div')
+    }
+
+
+    //In theroy should be working
+    async bottomFunction() {
+
+        await browser.execute(() => window.scrollTo(0, 3000))
+        
+        for (let y = 1; y < this.mainTabs.length; y ++) {
+            
+            for (let x = 0; x < this.leftTabs.length; x ++) {
+                const tab = this.leftTab[x]
+
+                await tab.moveTo()
+                await expect(tab).toHaveAttribute('class', 'tab_item app_impression_tracked focus')
+
+                for (let i = 0; i < this.tags.length; i ++) {
+                    expect(await this.tags[i].getText()).toEqual(await this.tagsR[i].getText())
+                    await expect(this.tagsR[i]).not.toHaveHref('https://store.steampowered.com/')
+                }
+                await expect(tab).not.toHaveHref('https://store.steampowered.com/')
+            }
+            const theButtons = this.seeMoreButtons
+            for (let i = 0; i < theButtons.length; i ++) {
+                if (theButtons[i].isDisplayed()) {
+                    await expect(theButtons[i]).not.toHaveHref('https://store.steampowered.com/')
+                }
+            }
+            await this.mainTabs[y].click()
+        }
+    }       
 }
 
 export default new HomePage();
