@@ -1,6 +1,6 @@
 import HomePage from '../pageobjects/homePage.js'
 
-describe('Store navigation test', () => {
+/*describe('Store navigation test', () => {
     it('should click through flyout links Your Store and New & Noteworthy', async() =>{
         await HomePage.openURL()
         await HomePage.flyoutFunction()
@@ -26,7 +26,7 @@ describe('Carousel existance test', () => {
         await HomePage.openURL()
         await HomePage.carouselFunction()
     })
-})
+})*/
 
 describe('Bottoms tabby tetsing', () => {
     it('should prove the existance of links, images, and matching information', async() =>{

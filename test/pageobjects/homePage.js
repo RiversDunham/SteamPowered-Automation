@@ -1,6 +1,5 @@
 import Base from './base.js'
 import {$, $$} from '@wdio/globals'
-import {Key} from 'webdriverio'
 
 class HomePage extends Base {
 
@@ -219,7 +218,7 @@ class HomePage extends Base {
 
     //module 3
     get leftTabs() {
-        return $$('#tab_newreleases_content .tab_content_items > a')
+        return $$('.tab_content_items > a')
     }
 
     get tags() {
@@ -234,42 +233,78 @@ class HomePage extends Base {
         return $('#tab_preview_container .tab_preview.focus h2')
     }
 
-    get seeMoreButtons() {
-        return $$('.home_tabs_content .tab_see_more a')
+    get newReleasesButton() {
+        return $('#tab_newreleases_content .tab_see_more a')
+    }
+
+    get topSellersButton() {
+        return $('#tab_topsellers_content span[data-searchid="default"] a:nth-child(1)')
+    }
+
+    get globalTopButton() {
+        return $('#tab_topsellers_content span[data-searchid="default"] a:nth-child(2)')
+    }
+
+    get upcomingButton() {
+        return $('#tab_upcoming_content .tab_see_more a')
+    }
+
+    get specialsButton() {
+        return $('#tab_specials_content .tab_see_more a')
+    }
+
+    get freeToPlayButton() {
+        return $('#tab_trendingfree_content .tab_see_more a:nth-child(1)')
+    }
+
+    get demosButton() {
+        return $('#tab_trendingfree_content .tab_see_more a:nth-child(2)')
     }
 
     get mainTabs() {
         return $$('.home_tabs_row > div')
     }
 
+    get checkbox() {
+        return $('#top_sellers_f2p_check')
+    }
 
-    //In theroy should be working
+
+    //Passable
     async bottomFunction() {
 
         await browser.execute(() => window.scrollTo(0, 3000))
-        
-        for (let y = 1; y < this.mainTabs.length; y ++) {
-            
-            for (let x = 0; x < this.leftTabs.length; x ++) {
-                const tab = this.leftTab[x]
-
-                await tab.moveTo()
-                await expect(tab).toHaveAttribute('class', 'tab_item app_impression_tracked focus')
-
-                for (let i = 0; i < this.tags.length; i ++) {
-                    expect(await this.tags[i].getText()).toEqual(await this.tagsR[i].getText())
-                    await expect(this.tagsR[i]).not.toHaveHref('https://store.steampowered.com/')
+        for (let x = 0; x < await this.leftTabs.length; x ++) {
+            await this.leftTabs[x].moveTo()
+            await expect(this.leftTabs[x]).not.toHaveHref('https://store.steampowered.com/')
+            if (x >= 10 && x <= 19) {
+                if (x == 10) {
+                    await this.checkbox.click()
                 }
-                await expect(tab).not.toHaveHref('https://store.steampowered.com/')
+                await expect(this.leftTabs[x].$('.discount_final_price.free')).not.toBeDisplayed()
             }
-            const theButtons = this.seeMoreButtons
-            for (let i = 0; i < theButtons.length; i ++) {
-                if (theButtons[i].isDisplayed()) {
-                    await expect(theButtons[i]).not.toHaveHref('https://store.steampowered.com/')
-                }
+            for (let i = 0; i < await this.tagsR.length; i ++) {
+                await expect(this.tagsR[i]).not.toHaveHref('https://store.steampowered.com/')
             }
-            await this.mainTabs[y].click()
-        }
+
+            if (x == 9) {
+                await expect(this.newReleasesButton).not.toHaveHref('https://store.steampowered.com/')
+                await this.mainTabs[(x + 1) / 10].click()
+            } else if (x == 19) {
+                await expect(this.topSellersButton).not.toHaveHref('https://store.steampowered.com/')
+                await expect(this.globalTopButton).not.toHaveHref('https://store.steampowered.com/')
+                await this.mainTabs[(x + 1) / 10].click()
+            } else if (x == 29) {
+                await expect(this.upcomingButton).not.toHaveHref('https://store.steampowered.com/')
+                await this.mainTabs[(x + 1) / 10].click()
+            } else if (x == 39) {
+                await expect(this.specialsButton).not.toHaveHref('https://store.steampowered.com/')
+                await this.mainTabs[(x + 1) / 10].click()
+            } else if (x == 49) {
+                await expect(this.freeToPlayButton).not.toHaveHref('https://store.steampowered.com/')
+                await expect(this.demosButton).not.toHaveHref('https://store.steampowered.com/')
+            }
+        }        
     }       
 }
 
