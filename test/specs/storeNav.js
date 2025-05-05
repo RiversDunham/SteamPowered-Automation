@@ -1,36 +1,33 @@
-import HomePage from '../pageobjects/homePage.js'
+import NavigationTabs from '../pageobjects/navigationTabs.js'
+import NavigationSearch from '../pageobjects/navigationSearch.js'
+import Carousel from '../pageobjects/carousel.js'
+import ContentItems from '../pageobjects/contentItems.js'
 
-/*describe('Store navigation test', () => {
+describe('Store navigation test', () => {
     it('should click through flyout links Your Store and New & Noteworthy', async() =>{
-        await HomePage.openURL()
-        await HomePage.flyoutFunction()
-    })
-})
-
-describe('Store navigation tabs', () => {
-    it('should clcik the three tabs to ensure they dont 404', async() =>{
-        await HomePage.openURL()
-        await HomePage.tabsFucntion()
+        await NavigationTabs.openURL()
+        await NavigationTabs.flyoutFunction()
+        await NavigationTabs.tabsFucntion()
     })
 })
 
 describe('Search inside navigation test', () => {
     it('should perfom multiple searches', async() =>{
-        await HomePage.openURL()
-        await HomePage.searchFunction()
+        await NavigationSearch.openURL()
+        await NavigationSearch.searchFunction()
     })
 })
 
 describe('Carousel existance test', () => {
     it('should prove the existance of all images in carousel, and that links function', async() =>{
-        await HomePage.openURL()
-        await HomePage.carouselFunction()
+        await Carousel.openURL()
+        await Carousel.carouselFunction()
     })
-})*/
+})
 
-describe('Bottoms tabby tetsing', () => {
+describe('Content items testing', () => {
     it('should prove the existance of links, images, and matching information', async() =>{
-        await HomePage.openURL()
-        await HomePage.bottomFunction()
+        await ContentItems.openURL()
+        await ContentItems.bottomFunction()
     })
 })
