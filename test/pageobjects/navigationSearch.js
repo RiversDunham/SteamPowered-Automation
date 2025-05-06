@@ -3,10 +3,6 @@ import {$} from '@wdio/globals'
 
 class NavigationSearch extends Base {
 
-    openURL(endpoint) {
-        return super.openURL(endpoint)
-    }
-
     get searchForm() {
         return $('#searchform')
     }
@@ -22,7 +18,11 @@ class NavigationSearch extends Base {
         return $('#store_search_link > img')
     }
 
-    async searchFunction() {
+    get otherPageInput() {
+        return $('.text')
+    }
+
+    async searchFunction(randomLen) {
 
         await this.searchInput.click()
         expect(this.searchInput).not.toHaveAttribute('class', 'default')
@@ -30,11 +30,14 @@ class NavigationSearch extends Base {
         await this.searchInput.setValue('raft')
         expect(this.suggestions).toBeExisting({timeout : 5000})
         await browser.keys('Enter')
+        expect(this.otherPageInput).toHaveValue('raft')
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
-        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+        const randString = this.randomString(randomLen)
+        await this.searchInput.setValue(randString)
         await browser.keys('Enter')
+        expect(this.otherPageInput).toHaveValue(randString)
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
@@ -47,6 +50,7 @@ class NavigationSearch extends Base {
         expect(this.suggestions).toBeExisting({timeout : 5000})
         expect(this.searchInput).toHaveValue('!@#$%^&*()-_=+\|[]{};:/><')
         await browser.keys('Enter')
+        expect(this.otherPageInput).toHaveValue('!@#$%^&*()-_=+\|[]{};:/><')
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
 
@@ -56,11 +60,13 @@ class NavigationSearch extends Base {
         await this.searchInput.setValue('raft')
         expect(this.suggestions).toBeExisting({timeout : 5000})
         await this.magnifiyingGlass.click()
+        expect(this.otherPageInput).toHaveValue('raft')
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
-        await this.searchInput.setValue('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+        await this.searchInput.setValue(randString)
         await this.magnifiyingGlass.click()
+        expect(this.otherPageInput).toHaveValue(randString)
 
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
         await browser.back()
@@ -73,9 +79,20 @@ class NavigationSearch extends Base {
         expect(this.suggestions).toBeExisting({timeout : 5000})
         expect(this.searchInput).toHaveValue('!@#$%^&*()-_=+\|[]{};:/><')
         await this.magnifiyingGlass.click()
+        expect(this.otherPageInput).toHaveValue('!@#$%^&*()-_=+\|[]{};:/><')
         
         expect(browser).toHaveUrl(expect.stringContaining('https://store.steampowered.com/search/'))
+        await browser.back()
     }
+
+    randomString(length) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=~`':;/?.<>,[]{}\|"
+        let result = ""
+        for (let i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length))
+        }
+        return result
+      }
 }
 
 export default new NavigationSearch()

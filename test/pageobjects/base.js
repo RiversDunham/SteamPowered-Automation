@@ -1,5 +1,4 @@
 import {browser} from '@wdio/globals';
-//base page object
 
 export default class Base {
 

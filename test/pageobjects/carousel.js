@@ -2,11 +2,7 @@ import Base from './base.js'
 import {$, $$} from '@wdio/globals'
 
 class Carousel extends Base {
-
-    openURL(endpoint) {
-        return super.openURL(endpoint)
-    }
-
+    
     get imageWheel() {
         return $('.home_cluster_ctn.home_ctn .carousel_items.responsive_scroll_snap_ctn')
     }
@@ -39,16 +35,12 @@ class Carousel extends Base {
         return $('.home_cluster_ctn.home_ctn .carousel_thumbs > div:nth-child(1)')
     }
 
-    get rightArrow() {
-        return $('.home_cluster_ctn.home_ctn .arrow.right')
-    }
-
-    get leftArrow() {
-        return $('.home_cluster_ctn.home_ctn .arrow.left')
+    arrow(direction) {
+        return $(`.home_cluster_ctn.home_ctn .arrow.${direction}`)
     }
 
     get focusImage() {
-        return $('.carousel_items.responsive_scroll_snap_ctn .screenshot.focus');
+        return $('.carousel_items.responsive_scroll_snap_ctn .screenshot.focus')
     }
 
     get searchForm() {
@@ -79,22 +71,40 @@ class Carousel extends Base {
             await currentThumb.click();
 
             if (i == 11) {
-                await this.rightArrow.click()
-                await this.leftArrow.click()
-                await this.rightArrow.click()
+                const initalAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await this.arrow('right').click()
+                let newAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await expect(newAttr).not.toEqual(initalAttr)
+                await this.arrow('left').click()
+                newAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await expect(newAttr).toEqual(initalAttr)
+                await this.arrow('right').click()
             } else {
+                let initalAttr = await this.imageDefault.getAttribute('data-background-image-url')
                 await this.thumbFocus.click()
-                await this.rightArrow.click()
-                await this.leftArrow.click()
+                let newAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await expect(newAttr).not.toEqual(initalAttr)
+                initalAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await this.arrow('right').click()
+                newAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await expect(newAttr).not.toEqual(initalAttr)
+                await this.arrow('left').click()
+                newAttr = await this.imageDefault.getAttribute('data-background-image-url')
+                await expect(newAttr).toEqual(initalAttr)
             }
         }
-        await this.rightArrow.click()
-        await this.leftArrow.click()
+
+        await this.arrow('right').click()
+
+        await this.arrow('left').click()
+
         await this.firstThumb.click()
 
+
+
         await this.searchForm.moveTo()
-        const initalAttr = await this.imageDefault.getAttribute('data-background-image-url')
-        while(await this.imageDefault.getAttribute('data-background-image-url') == initalAttr) {
+        const initalAttr2 = await this.imageDefault.getAttribute('data-background-image-url')
+        while(await this.imageDefault.getAttribute('data-background-image-url') == initalAttr2) {
 
         }
     }

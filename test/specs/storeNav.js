@@ -13,8 +13,7 @@ describe('Store navigation test', () => {
 
 describe('Search inside navigation test', () => {
     it('should perfom multiple searches', async() =>{
-        await NavigationSearch.openURL()
-        await NavigationSearch.searchFunction()
+        await NavigationSearch.searchFunction(70)
     })
 })
 
@@ -27,7 +26,6 @@ describe('Carousel existance test', () => {
 
 describe('Content items testing', () => {
     it('should prove the existance of links, images, and matching information', async() =>{
-        await ContentItems.openURL()
         await ContentItems.bottomFunction()
     })
 })
